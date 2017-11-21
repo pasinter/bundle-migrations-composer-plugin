@@ -1,1 +1,2 @@
-# bundle-migrations-composer-plugin
+-- Package Migrations Composer Plugin
+

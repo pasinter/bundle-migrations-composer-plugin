@@ -1,0 +1,25 @@
+
+{
+  "name": "pasinter/package-migrations-composer-plugin",
+  "type": "composer-plugin",
+  "description": "Composer plugin for package migrations",
+  "license": "Apache-2.0",
+  "prefer-stable": true,
+  "authors": [
+    {
+      "name": "pasinter"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Pasinter\\Composer\\Migrations\\": "src"
+    }
+  },
+  "require": {
+    "composer-plugin-api": "^1.1",
+    "composer/composer": "^1.4"
+  },
+  "extra": {
+    "class": "Pasinter\\Composer\\Migrations\\PackageMigrationsPlugin"
+  }
+}
