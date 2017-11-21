@@ -1,0 +1,1 @@
+# bundle-migrations-composer-plugin
