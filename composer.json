@@ -2,7 +2,8 @@
 {
   "name": "pasinter/package-migrations-composer-plugin",
   "type": "composer-plugin",
-  "description": "Composer plugin for package migrations",
+  "description": "Composer plugin that integrates package (eg Symfony Bundle) Doctrine migrations into the project",
+  "keywords":    ["migrations", "doctrine", "bundle", "symfony", "package"],
   "license": "Apache-2.0",
   "prefer-stable": true,
   "authors": [
