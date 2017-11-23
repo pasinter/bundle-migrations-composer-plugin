@@ -55,7 +55,7 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
 
         $projectMigrationsDirectory = $projectDir . '/app/DoctrineMigrations';
 
-        $packageDir = $projectDir . 'vendor/' . $package->getName() . '/' . $package->getTargetDir();
+        $packageDir = $projectDir . '/vendor/' . $package->getName() . '/' . $package->getTargetDir();
 
         $packageMigrationsDir = $packageDir . 'DoctrineMigrations';
 
@@ -71,8 +71,8 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
                 if (symlink($packageMigrationsDir, $targetDir)) {
                     $this->io->write(sprintf('Created symlink %s (%s) for package %s', $targetDir, $packageMigrationsDir, $package->getName()));
                 } else {
-                    throw new \Exception;
                     $this->io->writeError(sprintf('Could not Create symlink %s (%s) for package %s', $targetDir, $packageMigrationsDir, $package->getName()));
+                    throw new \RuntimeException;
                 }
             }
         }
