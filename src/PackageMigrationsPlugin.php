@@ -5,7 +5,6 @@ use Composer\Composer;
 use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\EventDispatcher\EventSubscriberInterface;
-use Composer\Factory;
 use Composer\IO\IOInterface;
 use Composer\Package\CompletePackage;
 use Composer\Plugin\PluginInterface;
@@ -51,30 +50,46 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
         $package = $operation instanceof InstallOperation ? $operation->getPackage() : $operation->getTargetPackage();
         /* @var $package CompletePackage */
 
-        $projectDir = realpath(dirname(Factory::getComposerFile()));
+        $projectMigrationsDirectory = 'app/DoctrineMigrations';
 
-        $projectMigrationsDirectory = $projectDir . '/app/DoctrineMigrations';
-
-        $packageDir = $projectDir . '/vendor/' . $package->getName() . '/' . $package->getTargetDir();
+        $packageDir = 'vendor/' . $package->getName() . '/' . $package->getTargetDir();
 
         $packageMigrationsDir = $packageDir . 'DoctrineMigrations';
 
         if (file_exists($packageMigrationsDir) && is_dir($packageMigrationsDir)) {
-            $finder = new Finder();
-            $finder->files()->in($packageMigrationsDir)->sortByName()->name('*.php');
-
-            $this->io->write(sprintf('Found %s migration files in package %s', count($finder), $package->getName()));
-
-            $targetDir = $projectMigrationsDirectory . '/' . str_replace('/', '-', $package->getName());
+            $targetDir = $projectMigrationsDirectory . '/package-' . str_replace('/', '-', $package->getName());
 
             if (!file_exists($targetDir)) {
-                if (symlink($packageMigrationsDir, $targetDir)) {
-                    $this->io->write(sprintf('Created symlink %s (%s) for package %s', $targetDir, $packageMigrationsDir, $package->getName()));
+                if (mkdir($targetDir)) {
+                    $this->io->write(sprintf('Created directory %s for package %s', $targetDir, $package->getName()));
                 } else {
-                    $this->io->writeError(sprintf('Could not Create symlink %s (%s) for package %s', $targetDir, $packageMigrationsDir, $package->getName()));
+                    $this->io->writeError(sprintf('Could not create directory %s for package %s', $targetDir, $package->getName()));
                     throw new \RuntimeException;
                 }
             }
+
+            $cwd = getcwd();
+            chdir($targetDir);
+            $finder = new Finder();
+            $finder->files()->in('../../../' . $packageMigrationsDir)->sortByName()->name('*.php');
+            $this->io->write(sprintf('Found %s migration files in package %s', count($finder), $package->getName()));
+
+            foreach ($finder as $file) {
+                $targetFileName = $targetDir . '/' . $file->getBasename();
+
+                if (!file_exists($file->getBasename())) {
+                    if (symlink($file->getPathname(), $file->getBasename())) {
+                        $this->io->write(sprintf('Created migration symlink %s (%s) for package %s', $targetFileName, $file->getRelativePath(), $package->getName()));
+                    } else {
+                        $this->io->writeError(sprintf('Could not create migration symlink %s (%s) for package %s', $targetFileName, $file->getRelativePath(), $package->getName()));
+                        break;
+                    }
+                } else {
+                    $this->io->write(sprintf('Migration symlink %s (%s) already exists for package %s', $targetFileName, $file->getRelativePath(), $package->getName()));
+                }
+            }
+
+            chdir($cwd);
         }
     }
 }
