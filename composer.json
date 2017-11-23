@@ -18,7 +18,8 @@
   },
   "require": {
     "composer-plugin-api": "^1.1",
-    "composer/composer": "^1.4"
+    "composer/composer": "^1.4",
+    "symfony/finder": "^3.3"
   },
   "extra": {
     "class": "Pasinter\\Composer\\Migrations\\PackageMigrationsPlugin"
