@@ -10,6 +10,7 @@ use Composer\Package\CompletePackage;
 use Composer\Plugin\PluginInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Script\ScriptEvents;
+use Composer\Script\Event;
 use Symfony\Component\Finder\Finder;
 
 class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterface
@@ -33,6 +34,9 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
             ScriptEvents::POST_PACKAGE_UPDATE => [
                 ['importBundleMigrations', 0]
             ],
+            ScriptEvents::POST_INSTALL_CMD=> [
+                ['importBundleMigrationsAll', 0]
+            ],
         ];
     }
 
@@ -42,6 +46,11 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
         $this->io = $io;
     }
 
+    public function importBundleMigrationsAll(Event $event)
+    {
+        var_dump('importBundleMigrationsAll');
+    }
+    
     public function importBundleMigrations(PackageEvent $event)
     {
         $operation = $event->getOperation();
