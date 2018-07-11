@@ -34,7 +34,7 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
             ScriptEvents::POST_PACKAGE_UPDATE => [
                 ['importBundleMigrations', 0]
             ],
-            ScriptEvents::POST_INSTALL_CMD=> [
+            ScriptEvents::POST_INSTALL_CMD => [
                 ['importBundleMigrationsAll', 0]
             ],
         ];
@@ -48,7 +48,6 @@ class PackageMigrationsPlugin implements PluginInterface, EventSubscriberInterfa
 
     public function importBundleMigrationsAll(Event $event)
     {
-        var_dump('importBundleMigrationsAll');
     }
     
     public function importBundleMigrations(PackageEvent $event)
